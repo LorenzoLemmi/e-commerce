@@ -1,9 +1,11 @@
 package com.lorenzolemmi.ecommerce.controller;
 
+import com.lorenzolemmi.ecommerce.config.AppConstants;
 import com.lorenzolemmi.ecommerce.payload.CategoryDTO;
 import com.lorenzolemmi.ecommerce.payload.CategoryResponse;
 import com.lorenzolemmi.ecommerce.service.CategoryService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +20,12 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/echo")
-    public ResponseEntity<String> echoMessage(@RequestParam(name = "message", required = false) String message) {
-        return  new ResponseEntity<>("Echoed message: " + message, HttpStatus.OK);
-    }
-
     @GetMapping("/api/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories(){
-        CategoryResponse categoryResponse = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+                                                             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+                                                             @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY, required = false) String sortBy,
+                                                             @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
